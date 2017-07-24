@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>exposure component</title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+				border: 0;
+				list-style: none;
+				text-decoration: none;
+			}
+			img{
+				display: block;
+			}
+			body{
+				padding: 20px;
+			}
+			.lazy-wrap{
+				width: 1260px;
+				margin: 0 auto;
+				overflow: hidden;
+			}
+			.lazy-wrap li{
+				margin: 5px;
+				float: left;
+			}
+			.lazy-wrap img{
+				width: 200px;
+				height: 300px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<ul class="lazy-wrap">
+			
+		</ul>	
+
+		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+		<script type="text/javascript">
+			(function ($) {
+				var template = '', 
+					len = 30,
+					imgSource = '../images/1.jpg';
+
+				for (var i = 0; i < len; i++) {
+					template += '<li><img src="../images/blank.jpg"></li>';
+				}
+
+				$('.lazy-wrap').append(template);
+				$('.lazy-wrap img').attr('data-src', imgSource);
+
+				var Exposure = (function () {
+
+					function one ($selector, callback) {
+						new lazy($selector, callback);
+					}
+
+					function lazy ($selector, callback) {
+						this.$selector = $selector;
+						this.cb  = callback;
+
+						this.queue  = [];
+						this.isBind = false;
+
+						this.add();
+						this.init();
+					}
+
+					lazy.prototype = {
+						add: function ($selector, cb) {
+							var self = this;
+
+							this.$selector.each(function () {
+								var $cur = $(this);
+
+								self.queue.push({
+									el: $cur,
+									cb: self.cb
+								});
+							});
+						},
+						init: function () {
+							if (!this.isBind) {
+								this.bind();
+							}
+							this.do();
+						},
+						bind: function () {
+							var self  = this,
+								timer = null,
+								interval = 40;
+
+							$(window).on('scroll', function () {
+								timer && clearTimeout(timer);
+								timer = setTimeout(function () {
+									self.do();
+								}, interval);
+							});
+
+							self.isBind = true;
+						},
+						do: function () {
+
+							for (var i = 0; i < this.queue.length; i++) {
+								var item = this.queue[i];
+
+								if (this.isShow(item.el)) {
+									item.cb.call(item.el);
+								}
+							}
+						},
+						isShow: function ($el) {
+							var scrollH = $(window).scrollTop(),
+								winH = $(window).height(),
+								top = $el.offset().top;
+
+							return (top < winH + scrollH) ? true : false;
+						}
+					};
+
+					return {
+						one: one
+					};
+				})();
+
+				Exposure.one($('.lazy-wrap img'), function () {
+					showImg($(this));
+				});
+
+				function showImg ($el) {
+					$el.attr('src', $el.attr('data-src'));
+				}
+
+			})(jQuery);
+		</script>
+	</body>
+</html>

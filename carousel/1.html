@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>carousel component</title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+				border: 0;
+				list-style: none;
+				text-decoration: none;
+			}
+			img{
+				display: block;
+			}
+			body{
+				padding: 20px;
+			}
+			.carousel,
+			.carousel .img-wrap img{
+				width: 310px;
+				height: 200px;
+			}
+			.carousel{
+				position: relative;
+				overflow: hidden;
+			}
+			.carousel .img-wrap{
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+			.carousel .img-wrap li{
+				float: left;
+			}
+			.carousel .arrow{
+				width: 30px;
+				height: 30px;
+				line-height: 30px;
+				margin-top: -15px;
+				position: absolute;
+				top: 50%;
+				text-align: center;
+				background: #333;
+				color: #fff;
+				border-radius: 50%;
+				opacity: .6;
+				box-shadow: 0 0 2px #999;
+			}
+			.carousel .prev{
+				left: 5px;
+			}
+			.carousel .next{
+				right: 5px;
+			}
+			.carousel .footer-btn{
+				position: absolute;
+				bottom: 10px;
+				width: 100%;
+				text-align: center;
+			}
+			.carousel .footer-btn li{
+				display: inline-block;
+				width: 10px;
+				height: 10px;
+				border-radius: 5px;
+				background-color: rgba(255,255,255,0.8);
+				cursor: pointer;
+			}
+			.carousel .footer-btn .active{
+				background-color: #333;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="carousel" class="carousel" data-count="0">
+			<ul class="img-wrap">
+				<li><a href="#"><img src="../images/1.jpg"></a></li>
+				<li><a href="#"><img src="../images/2.jpg"></a></li>
+				<li><a href="#"><img src="../images/3.jpg"></a></li>
+				<li><a href="#"><img src="../images/4.jpg"></a></li>
+			</ul>
+			<ul class="footer-btn">
+				<li class="active"></li>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
+			<a href="javascript:void(0)" class="prev arrow">&lt;</a>
+			<a href="javascript:void(0)" class="next arrow">&gt;</a>
+		</div>
+
+		<br>
+
+		<div id="carousel2" class="carousel" data-count="0">
+			<ul class="img-wrap">
+				<li><a href="#"><img src="../images/1.jpg"></a></li>
+				<li><a href="#"><img src="../images/2.jpg"></a></li>
+				<li><a href="#"><img src="../images/3.jpg"></a></li>
+				<li><a href="#"><img src="../images/4.jpg"></a></li>
+			</ul>
+			<ul class="footer-btn">
+				<li class="active"></li>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
+			<a href="javascript:void(0)" class="prev arrow">&lt;</a>
+			<a href="javascript:void(0)" class="next arrow">&gt;</a>
+		</div>
+
+		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+		<script type="text/javascript">
+			(function ($) {
+				$.fn.carousel = function (t) {
+					var $imgWrap = $(this).find('.img-wrap'),
+						$liArr   = $(this).find('.img-wrap li'),
+						$next    = $(this).find('.next'),
+						$prev    = $(this).find('.prev'),
+						$btns    = $(this).find('.footer-btn li'),
+						count    = $(this).attr('data-count');
+					
+					var timer,
+						t = t || 3000;
+
+					var imgSize  = $liArr.length;
+					var imgWidth = $liArr.width();
+
+					$imgWrap.width(imgWidth * imgSize);
+					playAuto();
+
+					$next.on('click', function () {
+						playNext();
+					});
+
+					$prev.on('click', function () {
+						playPrev();
+					});
+
+					$(this).hover(function () {
+						clearInterval(timer);
+					}, function () {
+						playAuto();
+					});
+
+					function playNext () {
+						$imgWrap.animate({
+							'left': 0 - imgWidth
+						}, function () {
+							$(this).append($imgWrap.children().first());
+							$(this).css('left', 0);
+
+							count++;
+							if (count === 4) {
+								count = 0;
+							}
+							gotoPage(count);
+						});
+					}
+
+					function playPrev () {
+						$imgWrap.prepend($imgWrap.children().last());
+						$imgWrap.css('left', 0 - imgWidth);
+						$imgWrap.animate({'left': 0});
+
+						--count;
+						if (count === -4) {
+							count = 0;
+						}
+						gotoPage(count);
+					}
+
+					function playAuto () {
+						timer = setInterval(function () {
+							playNext();
+						}, t);
+					}
+					function gotoPage (idx) {
+						if (idx === -1) {
+							idx = 3;
+						} else if (idx === -2) {
+							idx = 2;
+						} else if (idx === -3) {
+							idx = 1;
+						}
+						$btns.removeClass('active');
+						$btns.eq(idx).addClass('active');
+					}
+				};
+
+				$('#carousel').carousel(1500);
+				$('#carousel2').carousel(1500);
+			})(jQuery);
+		</script>
+	</body>
+</html>

@@ -1,0 +1,318 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>tab-toggle component</title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+				border: 0;
+				list-style: none;
+				text-decoration: none;
+			}
+			img{
+				display: block;
+			}
+			body{
+				padding: 20px;
+			}
+			.tabs-wrap{
+				width: 312px;
+				margin-top: 20px;
+			}
+			.tabs-wrap .tab-btn{
+				overflow: hidden;
+				border: 1px solid #ccc;
+			}
+			.tabs-wrap .tab-btn li{
+				float: left;
+				height: 50px;
+				line-height: 50px;
+				text-align: center;
+				width: 155px;
+				cursor: pointer;
+			}
+			.tabs-wrap .tab-btn li.active{
+				background: #ccc;
+			}
+			.tabs-wrap .tab-cont > li{
+				display: none;
+			}
+			.tabs-wrap .tab-cont >  li:first-child{
+				display: block;
+			}
+			.carousel,
+			.carousel .img-wrap img{
+				width: 310px;
+				height: 200px;
+			}
+			.carousel{
+				position: relative;
+				overflow: hidden;
+			}
+			.carousel .img-wrap{
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+			.carousel .img-wrap li{
+				float: left;
+			}
+			.carousel .arrow{
+				width: 30px;
+				height: 30px;
+				line-height: 30px;
+				margin-top: -15px;
+				position: absolute;
+				top: 50%;
+				text-align: center;
+				background: #333;
+				color: #fff;
+				border-radius: 50%;
+				opacity: .6;
+				box-shadow: 0 0 2px #999;
+			}
+			.carousel .prev{
+				left: 5px;
+			}
+			.carousel .next{
+				right: 5px;
+			}
+			.carousel .footer-btn{
+				position: absolute;
+				bottom: 10px;
+				width: 100%;
+				text-align: center;
+			}
+			.carousel .footer-btn li{
+				display: inline-block;
+				width: 10px;
+				height: 10px;
+				border-radius: 5px;
+				background-color: rgba(255,255,255,0.8);
+			}
+			.carousel .footer-btn .active{
+				background-color: #333;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="tabs-wrap">
+			<ul class="tab-btn">
+				<li class="active">选项1</li>
+				<li>选项2</li>
+			</ul>
+			<ul class="tab-cont">
+				<li class="panel">
+					我是选项一
+					<div class="carousel">
+						<ul class="img-wrap">
+							<li><a href="#"><img src="../images/1.jpg"></a></li>
+							<li><a href="#"><img src="../images/2.jpg"></a></li>
+							<li><a href="#"><img src="../images/3.jpg"></a></li>
+							<li><a href="#"><img src="../images/4.jpg"></a></li>
+						</ul>
+						<ul class="footer-btn">
+							<li class="active"></li>
+							<li></li>
+							<li></li>
+							<li></li>
+						</ul>
+						<a href="javascript:void(0)" class="prev arrow">&lt;</a>
+						<a href="javascript:void(0)" class="next arrow">&gt;</a>
+					</div>
+
+					<div class="carousel">
+						<ul class="img-wrap">
+							<li><a href="#"><img src="../images/1.jpg"></a></li>
+							<li><a href="#"><img src="../images/2.jpg"></a></li>
+							<li><a href="#"><img src="../images/3.jpg"></a></li>
+							<li><a href="#"><img src="../images/4.jpg"></a></li>
+						</ul>
+						<ul class="footer-btn">
+							<li class="active"></li>
+							<li></li>
+							<li></li>
+							<li></li>
+						</ul>
+						<a href="javascript:void(0)" class="prev arrow">&lt;</a>
+						<a href="javascript:void(0)" class="next arrow">&gt;</a>
+					</div>
+				</li>
+				<li class="panel">
+					我是选项二
+					<div class="carousel">
+						<ul class="img-wrap">
+							<li><a href="#"><img src="../images/1.jpg"></a></li>
+							<li><a href="#"><img src="../images/2.jpg"></a></li>
+							<li><a href="#"><img src="../images/3.jpg"></a></li>
+							<li><a href="#"><img src="../images/4.jpg"></a></li>
+						</ul>
+						<ul class="footer-btn">
+							<li class="active"></li>
+							<li></li>
+							<li></li>
+							<li></li>
+						</ul>
+						<a href="javascript:void(0)" class="prev arrow">&lt;</a>
+						<a href="javascript:void(0)" class="next arrow">&gt;</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+		<script type="text/javascript">
+			(function ($) {
+				var carouselControl = (function () {
+					var carouselList = [];
+
+					function init ($carousel) {
+						$carousel.each(function () {
+							if (!$(this).hasClass('init')) {
+
+								carouselList.push(new Carousel($(this)));
+								$(this).addClass('init');
+							}
+						});
+					}
+
+					function getList () {
+						return carouselList;
+					}
+
+					function Carousel ($carousel) {
+						var self = this;
+
+						this.$carousel = $carousel;
+						this.$imgWrap  = $carousel.find('.img-wrap');
+						this.$liArr    = $carousel.find('.img-wrap li');
+						this.$next     = $carousel.find('.next');
+						this.$prev     = $carousel.find('.prev');
+						this.$btns     = $carousel.find('.footer-btn li');
+						this.imgSize   = this.$liArr.length;
+						this.imgWidth  = this.$liArr.width();
+						this.clock     = null;
+						this.count     = 0;
+
+						this.$imgWrap.width(self.imgWidth * self.imgSize);
+
+						this.bind();
+						this.playAuto();
+					}
+
+					Carousel.prototype = {
+						bind: function () {
+							var self = this;
+
+							this.$next.on('click', function () {
+								self.playNext();
+							});
+							this.$prev.on('click', function () {
+								self.playPrev();
+							});
+							this.$carousel.hover(function () {
+								clearInterval(self.clock);
+							}, function () {
+								self.playAuto();
+							});
+						},
+						playNext: function () {
+							var self = this;
+
+							this.$imgWrap.animate({'left': 0 - self.imgWidth}, function () {
+								$(this).append($(this).children().first());
+								$(this).css('left', 0);
+							});
+
+							this.count++;
+							if (this.count === 4) this.count = 0;
+							
+							this.gotoPage(this.count);
+						},
+						playPrev: function () {
+							var self = this;
+
+							this.$imgWrap.prepend(this.$imgWrap.children().last())
+										 .css({'left': 0 - self.imgWidth})
+										 .animate({'left': 0});
+							
+							--this.count;
+							if (this.count === -4) this.count = 0;
+							
+							this.gotoPage(this.count);
+						},
+						playAuto: function () {
+							var self = this;
+
+							this.clock = setInterval(function () {
+								self.playNext();
+							}, 3000);
+						},
+						gotoPage: function (idx) {
+							if (idx < 0) {
+								idx = this.imgSize + idx;
+							}
+							this.$btns.removeClass('active');
+							this.$btns.eq(idx).addClass('active');
+						}
+					};
+
+					return {
+						init: init,
+						getList: getList
+					}
+				})();
+
+				var tabControl = (function () {
+					var token = false;
+
+					function init (tabDom, callback) {
+						if (!token) {
+							$(tabDom).each(function () {
+								new tabToggle($(this), callback);
+							});
+							token = true;
+						}
+					}
+
+					function tabToggle ($dom, callback) {
+						this.$dom = $dom;
+						this.bind(callback);
+
+						var firstPanel = $dom.find('.tab-cont .panel').eq(0);
+						callback && callback(firstPanel);
+					}
+
+					tabToggle.prototype = {
+						bind: function (callback) {
+							var self = this;
+
+							this.$dom.on('click', '.tab-btn li', function () {
+								var index = $(this).index();
+
+								$(this).siblings().removeClass('active');
+								$(this).addClass('active');
+
+								self.$dom.find('.tab-cont > li').hide();
+								self.$dom.find('.tab-cont > li').eq(index).show();
+
+								callback && callback( self.$dom.find('.tab-cont .panel').eq(index) );
+							});
+						}
+					};
+
+					return {
+						init: init
+					};
+				})();
+
+				tabControl.init('.tabs-wrap', function ($panel) {
+					carouselControl.init($panel.find('.carousel'));
+				});
+			})(jQuery);
+		</script>
+	</body>
+</html>
