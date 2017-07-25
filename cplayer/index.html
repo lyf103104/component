@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+	<meta content="no-cache" http-equiv="Cache-Control" />
+	<meta content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" name="viewport" />
+	<meta content="yes" name="apple-mobile-web-app-capable" />
+	<meta content="telephone=no" name="format-detection" />
+	<title>MusicPlayer</title>
+	<link href="./css/style.css" rel="stylesheet">
+	<script>(function(doc,win){var docEl=doc.documentElement,resizeEvt='orientationchange'in window?'orientationchange':'resize',recalc=function(){var clientWidth=docEl.clientWidth;if(!clientWidth)return;docEl.style.fontSize=100*(clientWidth/640)+'px'};if(!doc.addEventListener)return;win.addEventListener(resizeEvt,recalc,false);doc.addEventListener('DOMContentLoaded',recalc,false)})(document,window);</script>
+</head>
+<body>
+	<div id="audio-container"></div>
+
+	<script src="./js/MusicPlayer.js"></script>
+	<script src="./js/musicConf.js"></script>
+	<script>
+	    /**
+		 * @param       {Object}  Musicplayer config object
+		 * cotainer     {String}  播放器容器Id,
+		 * music        {Object}  音频配置对象
+		 * music.name   {String}  歌曲名字
+		 * music.author {String}  歌曲作者
+		 * music.src    {String}  歌曲的链接地址
+		 * music.lrc    {String}  歌词的链接地址, ps: 必须是lrc格式
+		 * [mode]       {Number}  播放模式, 1 -> 顺序播放, 2 -> 随机播放, 3 -> 单曲循环, 默认为1
+		 * [autoplay]   {Boolean} 是否自动播放, 默认为false
+		 * @return      {Object}
+		 */
+		new MusicPlayer({
+			container: '#audio-container',
+			mode: 1,
+			autoplay: false,
+			music: musicConf
+		});
+	</script>
+</body>
+</html>
