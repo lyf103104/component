@@ -321,6 +321,7 @@
 	};
 
 	MusicPlayer.prototype.setMusic = function(idx) {
+		console.log(idx);
 		this.currentIndex = idx;
 		this.audio.src    = this.options.music[idx]['src'];
 		this.play();
