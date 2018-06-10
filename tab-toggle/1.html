@@ -163,7 +163,7 @@
 				</li>
 			</ul>
 		</div>
-		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+		<script src="../js/jquery.min.js"></script>
 		<script type="text/javascript">
 			(function ($) {
 				var carouselControl = (function () {
@@ -229,7 +229,7 @@
 
 							this.count++;
 							if (this.count === 4) this.count = 0;
-							
+
 							this.gotoPage(this.count);
 						},
 						playPrev: function () {
@@ -238,10 +238,10 @@
 							this.$imgWrap.prepend(this.$imgWrap.children().last())
 										 .css({'left': 0 - self.imgWidth})
 										 .animate({'left': 0});
-							
+
 							--this.count;
 							if (this.count === -4) this.count = 0;
-							
+
 							this.gotoPage(this.count);
 						},
 						playAuto: function () {

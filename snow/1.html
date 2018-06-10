@@ -27,8 +27,8 @@
 
 	<body>
 	<div class="odiv"></div>
-		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
-		<script src="../Util.js"></script>
+		<script src="../js/jquery.min.js"></script>
+		<script src="../../util/index.js"></script>
 		<script type="text/javascript">
 			(function ($) {
 				var Snow = (function () {
@@ -44,7 +44,7 @@
 						var leftStr = Math.floor(Util.rand(0, docW));
 
 						$('body').append($snow);
-						
+
 						$snow.css({
 							'top': -30,
 							'left': leftStr
@@ -55,7 +55,7 @@
 							$(this).remove();
 						});
 					}
-					
+
 					function start () {
 						timer = setInterval(snowDrop, 300);
 					}
